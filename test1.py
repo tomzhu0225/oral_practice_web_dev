@@ -137,7 +137,7 @@ def main():
 
     
     #init
-    
+    buffer=None
     
     if 'count' not in st.session_state:
         st.session_state['count'] = 0
