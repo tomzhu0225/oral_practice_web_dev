@@ -2,6 +2,7 @@ import streamlit as st
 
 #from core import recognize_from_mic,synthesize_to_speaker,respond,concatenate_me,concatenate_you,suggestion
 # Initialize the speech config
+import io
 import azure.cognitiveservices.speech as speechsdk
 from azure.cognitiveservices.speech.audio import AudioOutputConfig
 import openai
@@ -221,7 +222,7 @@ def app_sst():
     webrtc_ctx = webrtc_streamer(
         key="sendonly-audio",
         mode=WebRtcMode.SENDONLY,
-        audio_receiver_size=256,
+        audio_receiver_size=1024,
         rtc_configuration={"iceServers": [{"urls": ["stun:stun.xten.com:3478"]}]},
         media_stream_constraints={"audio": True},
     )
@@ -256,7 +257,9 @@ def app_sst():
                 sound_window_buffer += sound_chunk
                 if len(sound_window_buffer) > sound_window_len:
                     sound_window_buffer = sound_window_buffer[-sound_window_len:]
-    sound_window_buffer.export("example.wav", format="wav")
+
+    st.write(sound_window_buffer)
+    
     st.write(1)
     new_me=recognize_from_mic(lang_mode,azurekey)
     st.write(2)
