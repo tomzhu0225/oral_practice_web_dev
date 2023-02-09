@@ -243,7 +243,7 @@ def app_sst():
     text_output = st.empty()
     stream = None
     i=0
-    while i<1000:
+    while i<100:
         i=i+1
         if webrtc_ctx.audio_receiver:
             
@@ -269,7 +269,7 @@ def app_sst():
 
             if len(sound_chunk) > 0:
                 sound_chunk = sound_chunk.set_channels(1).set_frame_rate(16000)
-                buffer = np.array(sound_chunk.get_array_of_samples())
+                buffer =sound_chunk.get_array_of_samples()
                 
 
         else:
