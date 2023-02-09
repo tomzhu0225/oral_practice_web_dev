@@ -189,9 +189,8 @@ def main():
         unsafe_allow_html=True,
         )
         
-        app_sst(
-            str(MODEL_LOCAL_PATH), str(LANG_MODEL_LOCAL_PATH), lm_alpha, lm_beta, beam
-        )  
+        app_sst()
+          
 
         
         
