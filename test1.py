@@ -190,11 +190,11 @@ def main():
         unsafe_allow_html=True,
         )
         
-        app_sst()
+        
           
 
         
-        
+    app_sst()    
     for i in range(st.session_state['count']+1):
             st.markdown("""
     <style>
