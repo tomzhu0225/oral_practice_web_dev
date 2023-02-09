@@ -123,7 +123,17 @@ def main():
     global sugg_mod
     
     #model
+    MODEL_URL = "https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/deepspeech-0.9.3-models.pbmm"  # noqa
+    LANG_MODEL_URL = "https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/deepspeech-0.9.3-models.scorer"  # noqa
+    MODEL_LOCAL_PATH = HERE / "models/deepspeech-0.9.3-models.pbmm"
+    LANG_MODEL_LOCAL_PATH = HERE / "models/deepspeech-0.9.3-models.scorer"
 
+    download_file(MODEL_URL, MODEL_LOCAL_PATH, expected_size=188915987)
+    download_file(LANG_MODEL_URL, LANG_MODEL_LOCAL_PATH, expected_size=953363776)
+
+    lm_alpha = 0.931289039105002
+    lm_beta = 1.1834137581510284
+    beam = 100
 
     
     #init
@@ -194,7 +204,9 @@ def main():
           
 
         
-    app_sst()    
+    app_sst(
+        str(MODEL_LOCAL_PATH), str(LANG_MODEL_LOCAL_PATH), lm_alpha, lm_beta, beam
+    )  
     for i in range(st.session_state['count']+1):
             st.markdown("""
     <style>
@@ -215,30 +227,48 @@ def main():
             st.write('you said: '+ t_y, unsafe_allow_html=True)
             st.write('AI said: '+ t_a, unsafe_allow_html=True)
     
-def app_sst():
-    """A sample to use WebRTC in sendonly mode to transfer audio frames
-    from the browser to the server and visualize them with matplotlib
-    and `st.pyplot`."""
+def app_sst(model_path: str, lm_path: str, lm_alpha: float, lm_beta: float, beam: int):
     webrtc_ctx = webrtc_streamer(
-        key="sendonly-audio",
+        key="speech-to-text",
         mode=WebRtcMode.SENDONLY,
-        audio_receiver_size=256,
+        audio_receiver_size=1024,
         rtc_configuration={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]},
-        media_stream_constraints={"audio": True},
+        media_stream_constraints={"video": False, "audio": True},
     )
 
+    status_indicator = st.empty()
 
-    sound_window_len = 5000  # 15s
-    sound_window_buffer = None
+    if not webrtc_ctx.state.playing:
+        return
+
+    status_indicator.write("Loading...")
+    text_output = st.empty()
+    stream = None
+
     while True:
         if webrtc_ctx.audio_receiver:
+            if stream is None:
+                from deepspeech import Model
+
+                model = Model(model_path)
+                model.enableExternalScorer(lm_path)
+                model.setScorerAlphaBeta(lm_alpha, lm_beta)
+                model.setBeamWidth(beam)
+
+                stream = model.createStream()
+
+                status_indicator.write("Model loaded.")
+
+            sound_chunk = pydub.AudioSegment.empty()
             try:
                 audio_frames = webrtc_ctx.audio_receiver.get_frames(timeout=1)
             except queue.Empty:
-                logger.warning("Queue is empty. Abort.")
-                break
+                time.sleep(0.1)
+                status_indicator.write("No frame arrived.")
+                continue
 
-            sound_chunk = pydub.AudioSegment.empty()
+            status_indicator.write("Running. Say something!")
+
             for audio_frame in audio_frames:
                 sound = pydub.AudioSegment(
                     data=audio_frame.to_ndarray().tobytes(),
@@ -249,20 +279,23 @@ def app_sst():
                 sound_chunk += sound
 
             if len(sound_chunk) > 0:
-                if sound_window_buffer is None:
-                    sound_window_buffer = pydub.AudioSegment.silent(
-                        duration=sound_window_len
-                    )
+                sound_chunk = sound_chunk.set_channels(1).set_frame_rate(
+                    model.sampleRate()
+                )
+                buffer = np.array(sound_chunk.get_array_of_samples())
+                stream.feedAudioContent(buffer)
+                text = stream.intermediateDecode()
+                
+        else:
+            status_indicator.write("AudioReciver is not set. Abort.")
+            break
 
-                sound_window_buffer += sound_chunk
-                if len(sound_window_buffer) > sound_window_len:
-                    sound_window_buffer = sound_window_buffer[-sound_window_len:]
-
-    st.write(sound_window_buffer)
-    st.audio(sound_window_buffer)
-    st.write(1)
-    new_me=recognize_from_mic(lang_mode,azurekey)
-    st.write(2)
+    # st.write(sound_window_buffer)
+    # st.audio(sound_window_buffer)
+    # st.write(1)
+    # new_me=recognize_from_mic(lang_mode,azurekey)
+    # st.write(2)
+    new_me=text
     st.session_state['count']=st.session_state['count']+1
     
     if st.session_state['count']==1:     
