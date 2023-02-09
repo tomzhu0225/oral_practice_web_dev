@@ -222,13 +222,13 @@ def app_sst():
     webrtc_ctx = webrtc_streamer(
         key="sendonly-audio",
         mode=WebRtcMode.SENDONLY,
-        audio_receiver_size=1024,
+        audio_receiver_size=256,
         rtc_configuration={"iceServers": [{"urls": ["stun:stun.xten.com:3478"]}]},
         media_stream_constraints={"audio": True},
     )
 
 
-    sound_window_len = 15000  # 15s
+    sound_window_len = 5000  # 15s
     sound_window_buffer = None
     while True:
         if webrtc_ctx.audio_receiver:
