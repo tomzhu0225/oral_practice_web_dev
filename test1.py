@@ -215,7 +215,7 @@ def main():
             st.write('you said: '+ t_y, unsafe_allow_html=True)
             st.write('AI said: '+ t_a, unsafe_allow_html=True)
     
-def app_sst(model_path: str, lm_path: str, lm_alpha: float, lm_beta: float, beam: int):
+def app_sst():
     """A sample to use WebRTC in sendonly mode to transfer audio frames
     from the browser to the server and visualize them with matplotlib
     and `st.pyplot`."""
