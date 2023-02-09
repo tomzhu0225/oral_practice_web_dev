@@ -2,7 +2,7 @@ import streamlit as st
 
 #from core import recognize_from_mic,synthesize_to_speaker,respond,concatenate_me,concatenate_you,suggestion
 # Initialize the speech config
-from core import respond,concatenate_me,concatenate_you,suggestion
+import openai
 from streamlit_webrtc import WebRtcMode, webrtc_streamer
 import pydub
 import logging
@@ -23,6 +23,36 @@ import time
 HERE = Path(__file__).parent
 
 logger = logging.getLogger(__name__)
+def respond(conversation,mod,key):
+    openai.api_key = key
+    response = openai.Completion.create(
+    model=mod,
+    #model="text-curie-001",
+    prompt=conversation,
+    temperature=1,
+    max_tokens=150,
+    top_p=1,
+    frequency_penalty=1,
+    presence_penalty=0.1,
+    stop=["ME:", "YOU:"])
+    return response.choices[0].text
+
+def suggestion(conversation,mod,key):
+    openai.api_key = key
+    response = openai.Completion.create(
+    model=mod,
+    prompt=conversation,
+    temperature=1,
+    max_tokens=150,
+    top_p=1,
+    frequency_penalty=1,
+    presence_penalty=0.1,
+    stop=["ME:", "YOU:"])
+    return response.choices[0].text
+def concatenate_me(original,new):
+    return original+'ME:\n'+new+"YOU:\n"
+def concatenate_you(original,new):
+    return original+new
 # This code is based on https://github.com/streamlit/demo-self-driving/blob/230245391f2dda0cb464008195a470751c01770b/streamlit_app.py#L48  # noqa: E501
 def download_file(url, download_to: Path, expected_size=None):
     # Don't download the file twice.
