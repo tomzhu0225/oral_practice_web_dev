@@ -206,7 +206,7 @@ def main():
         
     app_sst()
     st.write(buffer)
-    status_indicator.write("Starting recognition...")
+    st.write("Starting recognition...")
     
     # st.write(sound_window_buffer)
     # st.audio(sound_window_buffer)
