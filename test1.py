@@ -205,7 +205,7 @@ def main():
 
         
     app_sst()
-    for i in range(st.session_state['count']+1):
+    for i in range(st.session_state['count']):
             st.markdown("""
     <style>
       .type1 {
@@ -242,8 +242,9 @@ def app_sst():
     status_indicator.write("Loading...")
     text_output = st.empty()
     stream = None
-
-    while True:
+    i=0
+    while i<100:
+        i=i+1
         if webrtc_ctx.audio_receiver:
             
 
