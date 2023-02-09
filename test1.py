@@ -223,7 +223,7 @@ def app_sst():
         key="sendonly-audio",
         mode=WebRtcMode.SENDONLY,
         audio_receiver_size=256,
-        rtc_configuration={"iceServers": [{"urls": ["stun:stun.xten.com:3478"]}]},
+        rtc_configuration={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]},
         media_stream_constraints={"audio": True},
     )
 
