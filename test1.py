@@ -257,8 +257,9 @@ def app_sst():
                 if len(sound_window_buffer) > sound_window_len:
                     sound_window_buffer = sound_window_buffer[-sound_window_len:]
     sound_window_buffer.export("example.wav", format="wav")
-    
+    st.write(1)
     new_me=recognize_from_mic(lang_mode,azurekey)
+    st.write(2)
     st.session_state['count']=st.session_state['count']+1
     
     if st.session_state['count']==1:     
