@@ -2,7 +2,7 @@ import streamlit as st
 
 #from core import recognize_from_mic,synthesize_to_speaker,respond,concatenate_me,concatenate_you,suggestion
 # Initialize the speech config
-import io
+
 import azure.cognitiveservices.speech as speechsdk
 from azure.cognitiveservices.speech.audio import AudioOutputConfig
 import openai
@@ -259,7 +259,7 @@ def app_sst():
                     sound_window_buffer = sound_window_buffer[-sound_window_len:]
 
     st.write(sound_window_buffer)
-    
+    st.audio(sound_window_buffer)
     st.write(1)
     new_me=recognize_from_mic(lang_mode,azurekey)
     st.write(2)
