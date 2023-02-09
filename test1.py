@@ -2,6 +2,8 @@ import streamlit as st
 
 #from core import recognize_from_mic,synthesize_to_speaker,respond,concatenate_me,concatenate_you,suggestion
 # Initialize the speech config
+import azure.cognitiveservices.speech as speechsdk
+from azure.cognitiveservices.speech.audio import AudioOutputConfig
 import openai
 from streamlit_webrtc import WebRtcMode, webrtc_streamer
 import pydub
@@ -23,6 +25,18 @@ import time
 HERE = Path(__file__).parent
 
 logger = logging.getLogger(__name__)
+def recognize_from_mic(lang,azureapi):
+	#Find your key and resource region under the 'Keys and Endpoint' tab in your Speech resource in Azure Portal
+	#Remember to delete the brackets <> when pasting your key and region!
+    speech_config = speechsdk.SpeechConfig(subscription=azureapi, region="francecentral")
+    speech_config.speech_recognition_language = lang
+    audio_config = speechsdk.AudioConfig(filename='example.wav')
+    speech_recognizer = speechsdk.SpeechRecognizer(speech_config=speech_config,audio_config=audio_config)    
+    #Asks user for mic input and prints transcription result on screen
+    
+    result = speech_recognizer.recognize_once()
+    
+    return result.text
 def respond(conversation,mod,key):
     openai.api_key = key
     response = openai.Completion.create(
@@ -108,17 +122,7 @@ def main():
     global sugg_mod
     
     #model
-    MODEL_URL = "https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/deepspeech-0.9.3-models.pbmm"  # noqa
-    LANG_MODEL_URL = "https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/deepspeech-0.9.3-models.scorer"  # noqa
-    MODEL_LOCAL_PATH = HERE / "models/deepspeech-0.9.3-models.pbmm"
-    LANG_MODEL_LOCAL_PATH = HERE / "models/deepspeech-0.9.3-models.scorer"
 
-    download_file(MODEL_URL, MODEL_LOCAL_PATH, expected_size=188915987)
-    download_file(LANG_MODEL_URL, LANG_MODEL_LOCAL_PATH, expected_size=953363776)
-
-    lm_alpha = 0.931289039105002
-    lm_beta = 1.1834137581510284
-    beam = 100
 
     
     #init
@@ -212,47 +216,29 @@ def main():
             st.write('AI said: '+ t_a, unsafe_allow_html=True)
     
 def app_sst(model_path: str, lm_path: str, lm_alpha: float, lm_beta: float, beam: int):
+    """A sample to use WebRTC in sendonly mode to transfer audio frames
+    from the browser to the server and visualize them with matplotlib
+    and `st.pyplot`."""
     webrtc_ctx = webrtc_streamer(
-        key="speech-to-text",
+        key="sendonly-audio",
         mode=WebRtcMode.SENDONLY,
-        audio_receiver_size=1024,
-        rtc_configuration={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]},
-        media_stream_constraints={"video": False, "audio": True},
+        audio_receiver_size=256,
+        rtc_configuration={"iceServers": [{"urls": ["stun:stun.xten.com:3478"]}]},
+        media_stream_constraints={"audio": True},
     )
 
-    status_indicator = st.empty()
 
-    if not webrtc_ctx.state.playing:
-        return
-
-    status_indicator.write("Loading...")
-    text_output = st.empty()
-    stream = None
-
+    sound_window_len = 15000  # 15s
+    sound_window_buffer = None
     while True:
         if webrtc_ctx.audio_receiver:
-            if stream is None:
-                from deepspeech import Model
-
-                model = Model(model_path)
-                model.enableExternalScorer(lm_path)
-                model.setScorerAlphaBeta(lm_alpha, lm_beta)
-                model.setBeamWidth(beam)
-
-                stream = model.createStream()
-
-                status_indicator.write("Model loaded.")
-
-            sound_chunk = pydub.AudioSegment.empty()
             try:
                 audio_frames = webrtc_ctx.audio_receiver.get_frames(timeout=1)
             except queue.Empty:
-                time.sleep(0.1)
-                status_indicator.write("No frame arrived.")
-                continue
+                logger.warning("Queue is empty. Abort.")
+                break
 
-            status_indicator.write("Running. Say something!")
-
+            sound_chunk = pydub.AudioSegment.empty()
             for audio_frame in audio_frames:
                 sound = pydub.AudioSegment(
                     data=audio_frame.to_ndarray().tobytes(),
@@ -263,20 +249,19 @@ def app_sst(model_path: str, lm_path: str, lm_alpha: float, lm_beta: float, beam
                 sound_chunk += sound
 
             if len(sound_chunk) > 0:
-                sound_chunk = sound_chunk.set_channels(1).set_frame_rate(
-                    model.sampleRate()
-                )
-                buffer = np.array(sound_chunk.get_array_of_samples())
-                stream.feedAudioContent(buffer)
-                text = stream.intermediateDecode()
-                
-        else:
-            status_indicator.write("AudioReciver is not set. Abort.")
-            break
+                if sound_window_buffer is None:
+                    sound_window_buffer = pydub.AudioSegment.silent(
+                        duration=sound_window_len
+                    )
+
+                sound_window_buffer += sound_chunk
+                if len(sound_window_buffer) > sound_window_len:
+                    sound_window_buffer = sound_window_buffer[-sound_window_len:]
+    sound_window_buffer.export("example.wav", format="wav")
     
-    
+    new_me=recognize_from_mic(lang_mode,azurekey)
     st.session_state['count']=st.session_state['count']+1
-    new_me=text
+    
     if st.session_state['count']==1:     
         st.session_state['conv'] = concatenate_me(Preset,new_me)
         st.session_state['conv'] = concatenate_me(st.session_state['conv'],new_me)
