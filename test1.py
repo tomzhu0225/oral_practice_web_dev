@@ -243,17 +243,49 @@ def app_sst():
     text_output = st.empty()
     stream = None
 
-    audio_config = speechsdk.audio.AudioConfig(
-    stream = lambda buffer: webrtc_ctx.audio_receiver.put_frames(buffer))
+    while True:
+        if webrtc_ctx.audio_receiver:
+            
+
+            sound_chunk = pydub.AudioSegment.empty()
+            try:
+                audio_frames = webrtc_ctx.audio_receiver.get_frames(timeout=1)
+            except queue.Empty:
+                time.sleep(0.1)
+                status_indicator.write("No frame arrived.")
+                continue
+
+            status_indicator.write("Running. Say something!")
+
+            for audio_frame in audio_frames:
+                sound = pydub.AudioSegment(
+                    data=audio_frame.to_ndarray().tobytes(),
+                    sample_width=audio_frame.format.bytes,
+                    frame_rate=audio_frame.sample_rate,
+                    channels=len(audio_frame.layout.channels),
+                )
+                sound_chunk += sound
+
+            if len(sound_chunk) > 0:
+                sound_chunk = sound_chunk.set_channels(1).set_frame_rate(16000)
+                buffer = np.array(sound_chunk.get_array_of_samples())
+                
+
+        else:
+            status_indicator.write("AudioReciver is not set. Abort.")
+            break
     
     status_indicator.write("Starting recognition...")
-
+    
     # st.write(sound_window_buffer)
     # st.audio(sound_window_buffer)
     # st.write(1)
     # new_me=recognize_from_mic(lang_mode,azurekey)
     # st.write(2)
-    new_me=recognize_from_mic
+    audio_config = speechsdk.audio.AudioConfig(
+    stream=buffer)
+
+    new_me=recognize_from_mic(lang_mode,azureapi,audio_config)
     st.session_state['count']=st.session_state['count']+1
     
     if st.session_state['count']==1:     
