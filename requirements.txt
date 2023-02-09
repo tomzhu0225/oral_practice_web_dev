@@ -7,4 +7,3 @@ pydub==0.25.1
 streamlit==1.10.0
 streamlit_webrtc==0.43.0
 azure.cognitiveservices.speech
-deepspeech
