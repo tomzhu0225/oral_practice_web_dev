@@ -4,8 +4,7 @@ Created on Wed Jan 18 21:44:21 2023
 
 @author: tomkeen
 """
-import azure.cognitiveservices.speech as speechsdk
-from azure.cognitiveservices.speech.audio import AudioOutputConfig
+
 import openai
 import os
 
