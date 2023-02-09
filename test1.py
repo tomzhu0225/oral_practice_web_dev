@@ -243,7 +243,7 @@ def app_sst():
     text_output = st.empty()
     stream = None
     i=0
-    while i<100:
+    while i<1000:
         i=i+1
         if webrtc_ctx.audio_receiver:
             
@@ -275,7 +275,7 @@ def app_sst():
         else:
             status_indicator.write("AudioReciver is not set. Abort.")
             break
-    
+    st.write(buffer)
     status_indicator.write("Starting recognition...")
     
     # st.write(sound_window_buffer)
@@ -284,7 +284,7 @@ def app_sst():
     # new_me=recognize_from_mic(lang_mode,azurekey)
     # st.write(2)
     audio_config = speechsdk.audio.AudioConfig(
-    stream=buffer)
+    filename=buffer)
 
     new_me=recognize_from_mic(lang_mode,azureapi,audio_config)
     st.session_state['count']=st.session_state['count']+1
