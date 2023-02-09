@@ -1,8 +1,8 @@
 import streamlit as st
-import azure.cognitiveservices.speech as speechsdk
+
 #from core import recognize_from_mic,synthesize_to_speaker,respond,concatenate_me,concatenate_you,suggestion
 # Initialize the speech config
-from core import recognize_from_mic,synthesize_to_speaker,respond,concatenate_me,concatenate_you,suggestion
+from core import respond,concatenate_me,concatenate_you,suggestion
 from streamlit_webrtc import WebRtcMode, webrtc_streamer
 import pydub
 import logging
