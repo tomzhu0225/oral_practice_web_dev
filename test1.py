@@ -205,6 +205,35 @@ def main():
 
         
     app_sst()
+    st.write(buffer)
+    status_indicator.write("Starting recognition...")
+    
+    # st.write(sound_window_buffer)
+    # st.audio(sound_window_buffer)
+    # st.write(1)
+    # new_me=recognize_from_mic(lang_mode,azurekey)
+    # st.write(2)
+    audio_config = speechsdk.audio.AudioConfig(
+    filename=buffer)
+
+    new_me=recognize_from_mic(lang_mode,azureapi,audio_config)
+    st.session_state['count']=st.session_state['count']+1
+    
+    if st.session_state['count']==1:     
+        st.session_state['conv'] = concatenate_me(Preset,new_me)
+        st.session_state['conv'] = concatenate_me(st.session_state['conv'],new_me)
+    else:
+        st.session_state['conv'] = concatenate_me(st.session_state['conv'],new_me)
+    Me_temp='ME'+str(st.session_state['count']-1)
+    new_you=respond(st.session_state['conv'],respond_mod,openaikey)
+    You_temp='YOU'+str(st.session_state['count']-1)
+    
+    st.session_state[You_temp]=new_you
+    st.session_state[Me_temp]=new_me
+    st.session_state['conv'] = concatenate_you(st.session_state['conv'],new_you)
+
+    conversation_sugg=st.session_state['conv']+'\nME:'
+    sugg=suggestion(conversation_sugg,sugg_mod,openaikey)
     for i in range(st.session_state['count']):
             st.markdown("""
     <style>
@@ -226,6 +255,7 @@ def main():
             st.write('AI said: '+ t_a, unsafe_allow_html=True)
     
 def app_sst():
+    global buffer
     webrtc_ctx = webrtc_streamer(
         key="speech-to-text",
         mode=WebRtcMode.SENDONLY,
@@ -276,35 +306,7 @@ def app_sst():
         else:
             status_indicator.write("AudioReciver is not set. Abort.")
             break
-    st.write(buffer)
-    status_indicator.write("Starting recognition...")
     
-    # st.write(sound_window_buffer)
-    # st.audio(sound_window_buffer)
-    # st.write(1)
-    # new_me=recognize_from_mic(lang_mode,azurekey)
-    # st.write(2)
-    audio_config = speechsdk.audio.AudioConfig(
-    filename=buffer)
-
-    new_me=recognize_from_mic(lang_mode,azureapi,audio_config)
-    st.session_state['count']=st.session_state['count']+1
-    
-    if st.session_state['count']==1:     
-        st.session_state['conv'] = concatenate_me(Preset,new_me)
-        st.session_state['conv'] = concatenate_me(st.session_state['conv'],new_me)
-    else:
-        st.session_state['conv'] = concatenate_me(st.session_state['conv'],new_me)
-    Me_temp='ME'+str(st.session_state['count']-1)
-    new_you=respond(st.session_state['conv'],respond_mod,openaikey)
-    You_temp='YOU'+str(st.session_state['count']-1)
-    
-    st.session_state[You_temp]=new_you
-    st.session_state[Me_temp]=new_me
-    st.session_state['conv'] = concatenate_you(st.session_state['conv'],new_you)
-
-    conversation_sugg=st.session_state['conv']+'\nME:'
-    sugg=suggestion(conversation_sugg,sugg_mod,openaikey)
     
 
         
