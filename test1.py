@@ -2,7 +2,7 @@ import streamlit as st
 
 #from core import recognize_from_mic,synthesize_to_speaker,respond,concatenate_me,concatenate_you,suggestion
 # Initialize the speech config
-
+import base64
 import azure.cognitiveservices.speech as speechsdk
 from azure.cognitiveservices.speech.audio import AudioOutputConfig
 import openai
@@ -26,18 +26,40 @@ import time
 HERE = Path(__file__).parent
 
 logger = logging.getLogger(__name__)
-def recognize_from_mic(lang,azureapi,audio_config):
+def recognize_from_mic(lang,azureapi):
 	#Find your key and resource region under the 'Keys and Endpoint' tab in your Speech resource in Azure Portal
 	#Remember to delete the brackets <> when pasting your key and region!
     speech_config = speechsdk.SpeechConfig(subscription=azureapi, region="francecentral")
     speech_config.speech_recognition_language = lang
-    audio_config=audio_config
+    audio_config = speechsdk.audio.AudioConfig(filename="output.wav")
     speech_recognizer = speechsdk.SpeechRecognizer(speech_config=speech_config,audio_config=audio_config)    
     #Asks user for mic input and prints transcription result on screen
     
-    result = speech_recognizer.start_continuous_recognition()
+    result = speech_recognizer.recognize_once()
     
     return result.text
+def autoplay_audio(data):
+    b64 = base64.b64encode(data).decode()
+    md = f"""
+        <audio autoplay="true">
+        <source src="data:audio/mp3;base64,{b64}" type="audio/mp3">
+        </audio>
+        """
+    st.markdown(
+        md,
+        unsafe_allow_html=True,
+    )
+def synthesize_to_speaker(text,lang,azureapi):
+	#Find your key and resource region under the 'Keys and Endpoint' tab in your Speech resource in Azure Portal
+	#Remember to delete the brackets <> when pasting your key and region!
+    speech_config = speechsdk.SpeechConfig(subscription=azureapi, region="francecentral")
+    speech_config.speech_synthesis_language = lang
+    #In this sample we are using the default speaker 
+    #Learn how to customize your speaker using SSML in Azure Cognitive Services Speech documentation
+    audio_config = AudioOutputConfig(use_default_speaker=True)
+    synthesizer = speechsdk.SpeechSynthesizer(speech_config=speech_config, audio_config=audio_config)    
+    speech_synthesis_result=synthesizer.speak_text_async(text).get()
+    return speech_synthesis_result
 def respond(conversation,mod,key):
     openai.api_key = key
     response = openai.Completion.create(
@@ -137,7 +159,7 @@ def main():
 
     
     #init
-    buffer=None
+    
     
     if 'count' not in st.session_state:
         st.session_state['count'] = 0
@@ -205,35 +227,6 @@ def main():
 
         
     app_sst()
-    st.write(buffer)
-    st.write("Starting recognition...")
-    
-    # st.write(sound_window_buffer)
-    # st.audio(sound_window_buffer)
-    # st.write(1)
-    # new_me=recognize_from_mic(lang_mode,azurekey)
-    # st.write(2)
-    audio_config = speechsdk.audio.AudioConfig(
-    filename=buffer)
-
-    new_me=recognize_from_mic(lang_mode,azureapi,audio_config)
-    st.session_state['count']=st.session_state['count']+1
-    
-    if st.session_state['count']==1:     
-        st.session_state['conv'] = concatenate_me(Preset,new_me)
-        st.session_state['conv'] = concatenate_me(st.session_state['conv'],new_me)
-    else:
-        st.session_state['conv'] = concatenate_me(st.session_state['conv'],new_me)
-    Me_temp='ME'+str(st.session_state['count']-1)
-    new_you=respond(st.session_state['conv'],respond_mod,openaikey)
-    You_temp='YOU'+str(st.session_state['count']-1)
-    
-    st.session_state[You_temp]=new_you
-    st.session_state[Me_temp]=new_me
-    st.session_state['conv'] = concatenate_you(st.session_state['conv'],new_you)
-
-    conversation_sugg=st.session_state['conv']+'\nME:'
-    sugg=suggestion(conversation_sugg,sugg_mod,openaikey)
     for i in range(st.session_state['count']):
             st.markdown("""
     <style>
@@ -273,8 +266,8 @@ def app_sst():
     text_output = st.empty()
     stream = None
     i=0
-    while True :
-        
+    while i<100 :
+        i=i+1
         if webrtc_ctx.audio_receiver:
             
 
@@ -306,7 +299,39 @@ def app_sst():
         else:
             status_indicator.write("AudioReciver is not set. Abort.")
             break
+    sound_chunk.export("output.wav", format="wav")
+    st.write(buffer)
+    status_indicator.write("Starting recognition...")
     
+    # st.write(sound_window_buffer)
+    # st.audio(sound_window_buffer)
+    # st.write(1)
+    # new_me=recognize_from_mic(lang_mode,azurekey)
+    # st.write(2)
+
+
+    new_me=recognize_from_mic(lang_mode,azureapi)
+    st.session_state['count']=st.session_state['count']+1
+    
+    if st.session_state['count']==1:     
+        st.session_state['conv'] = concatenate_me(Preset,new_me)
+        st.session_state['conv'] = concatenate_me(st.session_state['conv'],new_me)
+    else:
+        st.session_state['conv'] = concatenate_me(st.session_state['conv'],new_me)
+    Me_temp='ME'+str(st.session_state['count']-1)
+    new_you=respond(st.session_state['conv'],respond_mod,openaikey)
+    
+    data=synthesize_to_speaker(new_you,lang_mode,azureapi)
+    autoplay_audio(data)
+    
+    You_temp='YOU'+str(st.session_state['count']-1)
+    
+    st.session_state[You_temp]=new_you
+    st.session_state[Me_temp]=new_me
+    st.session_state['conv'] = concatenate_you(st.session_state['conv'],new_you)
+
+    conversation_sugg=st.session_state['conv']+'\nME:'
+    sugg=suggestion(conversation_sugg,sugg_mod,openaikey)
     
 
         
