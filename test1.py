@@ -303,8 +303,7 @@ def app_sst():
                     break
                 else:
                     sound_eval = pydub.AudioSegment.empty()
-            else:
-                break
+
             
         else:
             status_indicator.write("AudioReciver is not set. Abort.")
