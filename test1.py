@@ -38,17 +38,19 @@ def recognize_from_mic(lang,azureapi):
     result = speech_recognizer.recognize_once()
     
     return result.text
-def autoplay_audio(data):
-    b64 = base64.b64encode(data).decode()
-    md = f"""
-        <audio autoplay="true">
-        <source src="data:audio/mp3;base64,{b64}" type="audio/mp3">
-        </audio>
-        """
-    st.markdown(
-        md,
-        unsafe_allow_html=True,
-    )
+def autoplay_audio():
+    with open('tts.mp3', "rb") as f:
+        data = f.read()
+        b64 = base64.b64encode(data).decode()
+        md = f"""
+            <audio autoplay="true">
+            <source src="data:audio/mp3;base64,{b64}" type="audio/mp3">
+            </audio>
+            """
+        st.markdown(
+            md,
+            unsafe_allow_html=True,
+        )
 def synthesize_to_speaker(text,lang,azureapi):
 	#Find your key and resource region under the 'Keys and Endpoint' tab in your Speech resource in Azure Portal
 	#Remember to delete the brackets <> when pasting your key and region!
@@ -58,8 +60,9 @@ def synthesize_to_speaker(text,lang,azureapi):
     #Learn how to customize your speaker using SSML in Azure Cognitive Services Speech documentation
     audio_config = AudioOutputConfig(use_default_speaker=True)
     synthesizer = speechsdk.SpeechSynthesizer(speech_config=speech_config, audio_config=audio_config)    
-    speech_synthesis_result=synthesizer.speak_text_async(text).get()
-    return speech_synthesis_result
+    result=synthesizer.speak_text_async(text).get()
+    result.audio_data.save('tts.mp3', speechsdk.AudioOutputFormat.Mp3)
+    
 def respond(conversation,mod,key):
     openai.api_key = key
     response = openai.Completion.create(
@@ -332,8 +335,8 @@ def app_sst():
     Me_temp='ME'+str(st.session_state['count']-1)
     new_you=respond(st.session_state['conv'],respond_mod,st.secrets["openaikey"])
     
-    # data=synthesize_to_speaker(new_you,lang_mode,st.secrets["azurekey"])
-    # autoplay_audio(data)
+    synthesize_to_speaker(new_you,lang_mode,st.secrets["azurekey"])
+    autoplay_audio()
     
     You_temp='YOU'+str(st.session_state['count']-1)
     
@@ -342,7 +345,7 @@ def app_sst():
     st.session_state['conv'] = concatenate_you(st.session_state['conv'],new_you)
 
     conversation_sugg=st.session_state['conv']+'\nME:'
-    sugg=suggestion(conversation_sugg,sugg_mod,st.secrets["openaikey"])
+    #sugg=suggestion(conversation_sugg,sugg_mod,st.secrets["openaikey"])
     status_indicator.write("Press stop")
 
         
