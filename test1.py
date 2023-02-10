@@ -299,7 +299,7 @@ def app_sst():
         else:
             status_indicator.write("AudioReciver is not set. Abort.")
             break
-    sound_chunk.export("output.wav", format="wav")
+    #sound_chunk.export("output.wav", format="wav")
     st.write(buffer)
     status_indicator.write("Starting recognition...")
     
