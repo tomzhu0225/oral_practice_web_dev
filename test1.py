@@ -263,8 +263,7 @@ def app_sst():
         return
 
     status_indicator.write("Loading...")
-    text_output = st.empty()
-    stream = None
+
     i=0
     sound1 = pydub.AudioSegment.empty()
     sound_eval = pydub.AudioSegment.empty()
@@ -297,7 +296,7 @@ def app_sst():
                 sound_chunk = sound_chunk.set_channels(1).set_frame_rate(16000)
                 sound1=sound1+sound_chunk
                 sound_eval=sound_eval+sound_chunk
-            if i % 10 ==20 and i>150:
+            if i % 20 ==0 and i>150:
                 deci_stop =np.array(sound_eval.get_array_of_samples()) # auto stop
                 max_v=np.amax(deci_stop)
                 if max_v<700:
