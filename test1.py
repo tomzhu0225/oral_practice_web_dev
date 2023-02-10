@@ -226,7 +226,7 @@ def main():
           
 
         
-    app_sst()
+        app_sst()
     for i in range(st.session_state['count']):
             st.markdown("""
     <style>
@@ -312,7 +312,7 @@ def app_sst():
     buffer =np.array(sound1.get_array_of_samples())
     
     st.write(sound1)
-    status_indicator.write("Starting recognition...")
+    status_indicator.write("Starting recognition and don't press stop")
     
     # st.write(sound_window_buffer)
     # st.audio(sound_window_buffer)
@@ -343,7 +343,7 @@ def app_sst():
 
     conversation_sugg=st.session_state['conv']+'\nME:'
     sugg=suggestion(conversation_sugg,sugg_mod,st.secrets["openaikey"])
-    
+    status_indicator.write("Press stop")
 
         
 
