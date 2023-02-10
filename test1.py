@@ -266,7 +266,7 @@ def app_sst():
     text_output = st.empty()
     stream = None
     i=0
-    sound = pydub.AudioSegment.empty()
+    sound1 = pydub.AudioSegment.empty()
     while i<150 :
         i=i+1
         if webrtc_ctx.audio_receiver:
@@ -293,7 +293,7 @@ def app_sst():
 
             if len(sound_chunk) > 0:
                 sound_chunk = sound_chunk.set_channels(1).set_frame_rate(16000)
-                sound=sound+sound_chunk
+                sound1=sound1+sound_chunk
                 buffer =sound_chunk.get_array_of_samples()
             else:
                 break
@@ -301,8 +301,8 @@ def app_sst():
         else:
             status_indicator.write("AudioReciver is not set. Abort.")
             break
-    sound.export("output.wav", format="wav")
-    st.write(sound)
+    sound1.export("output.wav", format="wav")
+    st.write(sound1)
     status_indicator.write("Starting recognition...")
     
     # st.write(sound_window_buffer)
