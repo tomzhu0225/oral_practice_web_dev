@@ -297,7 +297,7 @@ def app_sst():
                 sound1=sound1+sound_chunk
                 a=np.array(sound_chunk.get_array_of_samples())
                 max_value = np.amax(a)
-                if max_value<1000:
+                if max_value<1000 and i>150:
                     break
             else:
                 break
