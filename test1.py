@@ -293,10 +293,11 @@ def app_sst():
 
             if len(sound_chunk) > 0:
                 sound_chunk = sound_chunk.set_channels(1).set_frame_rate(16000)
+                sound=sound+sound_chunk
                 buffer =sound_chunk.get_array_of_samples()
             else:
                 break
-            sound=sound+sound_chunk
+            
         else:
             status_indicator.write("AudioReciver is not set. Abort.")
             break
