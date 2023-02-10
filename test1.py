@@ -311,6 +311,7 @@ def app_sst():
 
 
     new_me=recognize_from_mic(lang_mode,st.secrets["azurekey"])
+    st.write(new_me)
     st.session_state['count']=st.session_state['count']+1
     
     if st.session_state['count']==1:     
