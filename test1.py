@@ -266,7 +266,7 @@ def app_sst():
     text_output = st.empty()
     stream = None
     i=0
-    while i<100 :
+    while i<150 :
         i=i+1
         if webrtc_ctx.audio_receiver:
             
