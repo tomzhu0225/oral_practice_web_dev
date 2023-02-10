@@ -58,11 +58,14 @@ def synthesize_to_speaker(text,lang,azureapi):
     speech_config.speech_synthesis_language = lang
     #In this sample we are using the default speaker 
     #Learn how to customize your speaker using SSML in Azure Cognitive Services Speech documentation
-    audio_config = AudioOutputConfig(use_default_speaker=True)
-    synthesizer = speechsdk.SpeechSynthesizer(speech_config=speech_config, audio_config=audio_config)    
-    result=synthesizer.speak_text_async(text).get()
-    result.audio_data.save('tts.mp3', speechsdk.AudioOutputFormat.Mp3)
+    speech_config.set_speech_synthesis_output_format(speechsdk.SpeechSynthesisOutputFormat.Audio16Khz32KBitRateMonoMp3)  
+  
+    file_name = "tts.mp3"  
+    file_config = speechsdk.audio.AudioOutputConfig(filename=file_name)  
+    synthesizer = speechsdk.SpeechSynthesizer(speech_config=speech_config, audio_config=file_config)  
     
+    result=synthesizer.speak_text_async(text).get()
+
 def respond(conversation,mod,key):
     openai.api_key = key
     response = openai.Completion.create(
