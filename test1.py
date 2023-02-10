@@ -322,8 +322,8 @@ def app_sst():
     Me_temp='ME'+str(st.session_state['count']-1)
     new_you=respond(st.session_state['conv'],respond_mod,st.secrets["openaikey"])
     
-    data=synthesize_to_speaker(new_you,lang_mode,st.secrets["azurekey"])
-    autoplay_audio(data)
+    # data=synthesize_to_speaker(new_you,lang_mode,st.secrets["azurekey"])
+    # autoplay_audio(data)
     
     You_temp='YOU'+str(st.session_state['count']-1)
     
