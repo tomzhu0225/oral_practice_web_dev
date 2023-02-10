@@ -310,7 +310,7 @@ def app_sst():
     # st.write(2)
 
 
-    new_me=recognize_from_mic(lang_mode,azureapi)
+    new_me=recognize_from_mic(lang_mode,st.secrets["azurekey"])
     st.session_state['count']=st.session_state['count']+1
     
     if st.session_state['count']==1:     
@@ -319,9 +319,9 @@ def app_sst():
     else:
         st.session_state['conv'] = concatenate_me(st.session_state['conv'],new_me)
     Me_temp='ME'+str(st.session_state['count']-1)
-    new_you=respond(st.session_state['conv'],respond_mod,openaikey)
+    new_you=respond(st.session_state['conv'],respond_mod,st.secrets["openaikey"])
     
-    data=synthesize_to_speaker(new_you,lang_mode,azureapi)
+    data=synthesize_to_speaker(new_you,lang_mode,st.secrets["azurekey"])
     autoplay_audio(data)
     
     You_temp='YOU'+str(st.session_state['count']-1)
@@ -331,7 +331,7 @@ def app_sst():
     st.session_state['conv'] = concatenate_you(st.session_state['conv'],new_you)
 
     conversation_sugg=st.session_state['conv']+'\nME:'
-    sugg=suggestion(conversation_sugg,sugg_mod,openaikey)
+    sugg=suggestion(conversation_sugg,sugg_mod,st.secrets["openaikey"])
     
 
         
