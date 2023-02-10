@@ -31,7 +31,7 @@ def recognize_from_mic(lang,azureapi):
 	#Remember to delete the brackets <> when pasting your key and region!
     speech_config = speechsdk.SpeechConfig(subscription=azureapi, region="francecentral")
     speech_config.speech_recognition_language = lang
-    #audio_config = speechsdk.audio.AudioConfig(filename="output.wav")
+    audio_config = speechsdk.audio.AudioConfig(filename="output.wav")
     speech_recognizer = speechsdk.SpeechRecognizer(speech_config=speech_config,audio_config=audio_config)    
     #Asks user for mic input and prints transcription result on screen
     
@@ -299,7 +299,7 @@ def app_sst():
         else:
             status_indicator.write("AudioReciver is not set. Abort.")
             break
-    #sound_chunk.export("output.wav", format="wav")
+    sound_chunk.export("output.wav", format="wav")
     st.write(buffer)
     status_indicator.write("Starting recognition...")
     
