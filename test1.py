@@ -226,7 +226,7 @@ def main():
           
 
         
-        app_sst()
+    app_sst()
     for i in range(st.session_state['count']):
             st.markdown("""
     <style>
@@ -304,6 +304,7 @@ def app_sst():
             break
     sound1.export("output.wav", format="wav")
     buffer =np.array(sound1.get_array_of_samples())
+    st.write(buffer)
     st.write(sound1)
     status_indicator.write("Starting recognition...")
     
