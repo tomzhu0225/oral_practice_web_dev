@@ -217,7 +217,7 @@ def main():
         This page is providing a new way of practice your oral with openai!
         If you like the app, 
         
-        please star the github source code:[oral_practice_web_dev](https://github.com/tomzhu0225/oral_practice_web_dev)
+        please star source code:[github](https://github.com/tomzhu0225/oral_practice_web_dev)
         
         follow me on bilibili [drawingsword](https://space.bilibili.com/64849811/)
         
@@ -231,7 +231,7 @@ def main():
         """)
         st.markdown(html_temp.format("rgba(55, 53, 47, 0.16)"),unsafe_allow_html=True)
         st.markdown("""
-        Made by [@Bowen ZHU]https://www.linkedin.com/in/bowen-zhu-52ba181b9/)
+        Made by [@Bowen ZHU](https://www.linkedin.com/in/bowen-zhu-52ba181b9/)
         """,
         unsafe_allow_html=True,
         )
