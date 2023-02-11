@@ -177,6 +177,9 @@ def main():
     You_temp='YOU'+str(st.session_state['count'])
     if You_temp not in st.session_state:
         st.session_state[You_temp]=''
+    if 'sugg' not in st.session_state:
+        st.session_state['sugg'] = ''
+        
     #stun server
 
     st.header("Oral practice with AI")
@@ -243,6 +246,8 @@ def main():
 
         
         app_sst_side()
+        st.write('suggestion:'+st.session_state['sugg'])
+        
     for i in range(st.session_state['count']):
             st.markdown("""
     <style>
@@ -267,6 +272,7 @@ def main():
     
 def app_sst_side():
     global buffer
+    global sugg
     webrtc_ctx = webrtc_streamer(
         key="speech-to-text_side",
         mode=WebRtcMode.SENDONLY,
@@ -360,10 +366,12 @@ def app_sst_side():
     st.session_state['conv'] = concatenate_you(st.session_state['conv'],new_you)
 
     conversation_sugg=st.session_state['conv']+'\nME:'
-    #sugg=suggestion(conversation_sugg,sugg_mod,st.secrets["openaikey"])
+    sugg=suggestion(conversation_sugg,sugg_mod,st.secrets["openaikey"])
+    st.session_state['sugg']=sugg
     status_indicator.write("Press stop")
 def app_sst_main():
     global buffer
+    global sugg
     webrtc_ctx = webrtc_streamer(
         key="speech-to-text_main",
         mode=WebRtcMode.SENDONLY,
@@ -457,7 +465,8 @@ def app_sst_main():
     st.session_state['conv'] = concatenate_you(st.session_state['conv'],new_you)
 
     conversation_sugg=st.session_state['conv']+'\nME:'
-    #sugg=suggestion(conversation_sugg,sugg_mod,st.secrets["openaikey"])
+    sugg=suggestion(conversation_sugg,sugg_mod,st.secrets["openaikey"])
+    st.session_state['sugg']=sugg
     status_indicator.write("Press stop")
         
 
