@@ -242,6 +242,7 @@ def main():
         )
         
         serverlist=[ "google1","xten","google2","google3","google4",  
+                    '23.21.150.121',
         'stun.voipbuster.com',  
         'stun.sipgate.net',  
         'stun.ekiga.net',
