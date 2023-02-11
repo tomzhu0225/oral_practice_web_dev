@@ -249,7 +249,7 @@ def main():
         
         app_sst_side()
         if st.button('clear'):
-            for key in st.session_state.keys():
+            for key in ['count','conv','sugg']:
                 del st.session_state[key]
             if 'count' not in st.session_state:
                 st.session_state['count'] = 0

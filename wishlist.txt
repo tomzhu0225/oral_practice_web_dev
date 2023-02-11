@@ -1,0 +1,13 @@
+1. optimize recognition speed
+
+2. add speech analysis(grammar,intonation)
+
+3. add login system and maybe subscribtion
+
+4. add hide text function
+
+5. add the functionality to choose the speaker
+
+6. add the functionality to choose the level of difficulty in conversation
+
+
