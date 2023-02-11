@@ -242,7 +242,7 @@ def main():
         )
         
         serverlist=[ "google1","xten","google2","google3","google4",  
-                    '23.21.150.121',
+                    'google5',
         'stun.voipbuster.com',  
         'stun.sipgate.net',  
         'stun.ekiga.net',
@@ -271,6 +271,8 @@ def main():
             rtc={"iceServers": [{"urls": ["stun:stun2.l.google.com:19302"]}]}
         elif stun_mode=="google4":
             rtc={"iceServers": [{"urls": ["stun:stun3.l.google.com:19302"]}]}
+        elif stun_mode=="google5":
+            rtc={"iceServers": [{"urls": ["stun:stun4.l.google.com:19302"]}]}
         for i in range(6, len(serverlist)):
             if stun_mode==serverlist[i]:
                 rtc={"iceServers": [{"urls": ["stun:"+serverlist[i]+":3487"]}]}
