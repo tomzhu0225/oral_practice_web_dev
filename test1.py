@@ -232,7 +232,7 @@ def main():
           
 
         
-        app_sst()
+        app_sst_side()
     for i in range(st.session_state['count']):
             st.markdown("""
     <style>
@@ -253,10 +253,12 @@ def main():
             st.write('you said: '+ t_y, unsafe_allow_html=True)
             st.write('AI said: '+ t_a, unsafe_allow_html=True)
     
-def app_sst():
+    app_sst_main()
+    
+def app_sst_side():
     global buffer
     webrtc_ctx = webrtc_streamer(
-        key="speech-to-text",
+        key="speech-to-text_side",
         mode=WebRtcMode.SENDONLY,
         audio_receiver_size=1024,
         rtc_configuration={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]},
@@ -350,7 +352,103 @@ def app_sst():
     conversation_sugg=st.session_state['conv']+'\nME:'
     #sugg=suggestion(conversation_sugg,sugg_mod,st.secrets["openaikey"])
     status_indicator.write("Press stop")
+def app_sst_main():
+    global buffer
+    webrtc_ctx = webrtc_streamer(
+        key="speech-to-text_main",
+        mode=WebRtcMode.SENDONLY,
+        audio_receiver_size=1024,
+        rtc_configuration={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]},
+        media_stream_constraints={"video": False, "audio": True},
+    )
 
+    status_indicator = st.empty()
+
+    if not webrtc_ctx.state.playing:
+        return
+
+    status_indicator.write("Loading...")
+
+    i=0
+    sound1 = pydub.AudioSegment.empty()
+    sound_eval = pydub.AudioSegment.empty()
+    #150 约为3s
+    while i<1500 :
+        i=i+1
+        if webrtc_ctx.audio_receiver:
+            
+
+            sound_chunk = pydub.AudioSegment.empty()
+            try:
+                audio_frames = webrtc_ctx.audio_receiver.get_frames(timeout=1)
+            except queue.Empty:
+                time.sleep(0.1)
+                status_indicator.write("No frame arrived.")
+                continue
+
+            status_indicator.write("Running. Say something!")
+
+            for audio_frame in audio_frames:
+                sound = pydub.AudioSegment(
+                    data=audio_frame.to_ndarray().tobytes(),
+                    sample_width=audio_frame.format.bytes,
+                    frame_rate=audio_frame.sample_rate,
+                    channels=len(audio_frame.layout.channels),
+                )
+                sound_chunk += sound
+
+            if len(sound_chunk) > 0:
+                sound_chunk = sound_chunk.set_channels(1).set_frame_rate(16000)
+                sound1=sound1+sound_chunk
+                sound_eval=sound_eval+sound_chunk
+            if i % 50 ==0 and i>150:
+                deci_stop =np.array(sound_eval.get_array_of_samples()) # auto stop
+                max_v=np.amax(deci_stop)
+                if max_v<500:
+                    break
+                else:
+                    sound_eval = pydub.AudioSegment.empty()
+
+            
+        else:
+            status_indicator.write("AudioReciver is not set. Abort.")
+            break
+    sound1.export("output.wav", format="wav")
+    buffer =np.array(sound1.get_array_of_samples())
+    
+    st.write(sound1)
+    status_indicator.write("Starting recognition and don't press stop")
+    
+    # st.write(sound_window_buffer)
+    # st.audio(sound_window_buffer)
+    # st.write(1)
+    # new_me=recognize_from_mic(lang_mode,azurekey)
+    # st.write(2)
+
+
+    new_me=recognize_from_mic(lang_mode,st.secrets["azurekey"])
+    st.session_state['count']=st.session_state['count']+1
+    
+    if st.session_state['count']==1:     
+        st.session_state['conv'] = concatenate_me(Preset,new_me)
+        st.session_state['conv'] = concatenate_me(st.session_state['conv'],new_me)
+    else:
+        st.session_state['conv'] = concatenate_me(st.session_state['conv'],new_me)
+    Me_temp='ME'+str(st.session_state['count']-1)
+    new_you=respond(st.session_state['conv'],respond_mod,st.secrets["openaikey"])
+    
+    synthesize_to_speaker(new_you,lang_mode,st.secrets["azurekey"])
+    autoplay_audio()
+    
+    You_temp='YOU'+str(st.session_state['count']-1)
+    
+    st.session_state[You_temp]=new_you
+    st.session_state[Me_temp]=new_me
+    st.session_state['conv'] = concatenate_you(st.session_state['conv'],new_you)
+
+    conversation_sugg=st.session_state['conv']+'\nME:'
+    #sugg=suggestion(conversation_sugg,sugg_mod,st.secrets["openaikey"])
+    status_indicator.write("Press stop")
         
 
 
