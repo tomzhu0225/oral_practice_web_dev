@@ -240,14 +240,21 @@ def main():
         """,
         unsafe_allow_html=True,
         )
-        stun_mode = st.selectbox("Choose the stun server", ["中国","other(google)"],key='stun')
+        stun_mode = st.selectbox("Choose the stun server", ["google1","中国","google2","google3","google4"],key='stun')
         if stun_mode=='中国':
             rtc={"iceServers": [{"urls": ["stun:stun.xten.com:3478"]}]}
-        else:
+        elif stun_mode=="google1":
             rtc={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]}
+        elif stun_mode=="google2":
+            rtc={"iceServers": [{"urls": ["stun:stun1.l.google.com:19302"]}]}
+        elif stun_mode=="google3":
+            rtc={"iceServers": [{"urls": ["stun:stun2.l.google.com:19302"]}]}
+        elif stun_mode=="google4":
+            rtc={"iceServers": [{"urls": ["stun:stun3.l.google.com:19302"]}]}
+            
 
         
-        app_sst_side()
+        #app_sst_side()
         if st.button('clear'):
             for key in ['count','conv','sugg']:
                 del st.session_state[key]
@@ -293,7 +300,7 @@ def app_sst_side():
     webrtc_ctx = webrtc_streamer(
         key="speech-to-text_side",
         mode=WebRtcMode.SENDONLY,
-        audio_receiver_size=1024,
+        audio_receiver_size=4096,
         rtc_configuration=rtc,
         media_stream_constraints={"video": False, "audio": True},
     )
