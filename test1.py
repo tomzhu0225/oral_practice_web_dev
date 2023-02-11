@@ -270,9 +270,9 @@ def main():
             rtc={"iceServers": [{"urls": ["stun:stun2.l.google.com:19302"]}]}
         elif stun_mode=="google4":
             rtc={"iceServers": [{"urls": ["stun:stun3.l.google.com:19302"]}]}
-        # for i in range(6, len(serverlist)+1):
-        #     if stun_mode==serverlist[i]:
-        #         rtc={"iceServers": [{"urls": ["stun:"+serverlist[i]+":3487"]}]}
+        for i in range(6, len(serverlist)):
+            if stun_mode==serverlist[i]:
+                rtc={"iceServers": [{"urls": ["stun:"+serverlist[i]+":3487"]}]}
             
             
 
