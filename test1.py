@@ -214,7 +214,12 @@ def main():
     with st.sidebar:
         st.markdown("""
         # About 
-        This page is providing a new way of practice your oral with openai! 
+        This page is providing a new way of practice your oral with openai!
+        If you like the app, 
+        please star the github source code:[oral_practice_web_dev](https://github.com/tomzhu0225/oral_practice_web_dev)
+        follow me on bilibili [drawingsword](https://space.bilibili.com/64849811/)
+        follow me on youtube [linear chu](https://www.youtube.com/channel/UCR2jqmzkrzdB_VUJ2ytospA)
+        
         """)
         st.markdown(html_temp.format("rgba(55, 53, 47, 0.16)"),unsafe_allow_html=True)
         st.markdown("""
@@ -223,7 +228,7 @@ def main():
         """)
         st.markdown(html_temp.format("rgba(55, 53, 47, 0.16)"),unsafe_allow_html=True)
         st.markdown("""
-        Made by [@Bowen ZHU](https://github.com/tomzhu0225/oral_practice_with_openai)
+        Made by [@Bowen ZHU]https://www.linkedin.com/in/bowen-zhu-52ba181b9/)
         """,
         unsafe_allow_html=True,
         )
