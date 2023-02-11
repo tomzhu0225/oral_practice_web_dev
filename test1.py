@@ -229,11 +229,11 @@ def main():
         follow me on youtube [linear chu](https://www.youtube.com/channel/UCR2jqmzkrzdB_VUJ2ytospA)
         
         """)
-        st.markdown(html_temp.format("rgba(55, 53, 47, 0.16)"),unsafe_allow_html=True)
-        st.markdown("""
-        # How does it work
-        Simply click on the speak button and enjoy the conversation.
-        """)
+        # st.markdown(html_temp.format("rgba(55, 53, 47, 0.16)"),unsafe_allow_html=True)
+        # st.markdown("""
+        # # How does it work
+        # Simply click on the speak button and enjoy the conversation.
+        # """)
         st.markdown(html_temp.format("rgba(55, 53, 47, 0.16)"),unsafe_allow_html=True)
         st.markdown("""
         Made by [@Bowen ZHU](https://www.linkedin.com/in/bowen-zhu-52ba181b9/)
