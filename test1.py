@@ -248,6 +248,9 @@ def main():
 
         
         app_sst_side()
+        if st.button('clear'):
+            for key in st.session_state.keys():
+                del st.session_state[key]
         st.write('suggestion:'+st.session_state['sugg'])
         
     for i in range(st.session_state['count']):
