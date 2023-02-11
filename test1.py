@@ -251,6 +251,18 @@ def main():
         if st.button('clear'):
             for key in st.session_state.keys():
                 del st.session_state[key]
+            if 'count' not in st.session_state:
+                st.session_state['count'] = 0
+            Me_temp='ME'+str(st.session_state['count'])
+            if  Me_temp not in st.session_state:
+                st.session_state[Me_temp]=''
+            if 'conv' not in st.session_state:
+                st.session_state['conv'] = ''
+            You_temp='YOU'+str(st.session_state['count'])
+            if You_temp not in st.session_state:
+                st.session_state[You_temp]=''
+            if 'sugg' not in st.session_state:
+                st.session_state['sugg'] = ''
         st.write('suggestion:'+st.session_state['sugg'])
         
     for i in range(st.session_state['count']):
