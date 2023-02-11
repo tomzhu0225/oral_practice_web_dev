@@ -216,8 +216,11 @@ def main():
         # About 
         This page is providing a new way of practice your oral with openai!
         If you like the app, 
+        
         please star the github source code:[oral_practice_web_dev](https://github.com/tomzhu0225/oral_practice_web_dev)
+        
         follow me on bilibili [drawingsword](https://space.bilibili.com/64849811/)
+        
         follow me on youtube [linear chu](https://www.youtube.com/channel/UCR2jqmzkrzdB_VUJ2ytospA)
         
         """)
