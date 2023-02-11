@@ -149,7 +149,7 @@ def main():
     global Preset
     global respond_mod
     global sugg_mod
-    
+    global rtc
     #model
     # MODEL_URL = "https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/deepspeech-0.9.3-models.pbmm"  # noqa
     # LANG_MODEL_URL = "https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/deepspeech-0.9.3-models.scorer"  # noqa
@@ -179,7 +179,7 @@ def main():
         st.session_state[You_temp]=''
     #stun server
 
-    st.header("Oral practice with AI(网页版开发中...)")
+    st.header("Oral practice with AI")
 
 
     html_temp = """
@@ -189,7 +189,7 @@ def main():
                     """
     left, right = st.columns(2)
     with left: 
-        lang_mode = st.selectbox("Choose your language", ["zh-CN", "en-US", "fr-FR", "ja-JP"],key='lang')
+        lang_mode = st.selectbox("Choose your language", ["en-US","zh-CN", "fr-FR", "ja-JP", "it-IT", "pt-PT", "ru-RU"],key='lang')
     with right:
         int_mode = st.selectbox('Choose the model',["high Intelligence", "medium Intelligence", "low Intelligence"],key='intel')
     if int_mode=='high Intelligence':
@@ -227,9 +227,11 @@ def main():
         """,
         unsafe_allow_html=True,
         )
-        
-        
-          
+        stun_mode = st.selectbox("Choose the stun server", ["中国","other(google)"],key='stun')
+        if stun_mode=='中国':
+            rtc={"iceServers": [{"urls": ["stun:stun.xten.com:3478"]}]}
+        else:
+            rtc={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]}
 
         
         app_sst_side()
@@ -261,7 +263,7 @@ def app_sst_side():
         key="speech-to-text_side",
         mode=WebRtcMode.SENDONLY,
         audio_receiver_size=1024,
-        rtc_configuration={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]},
+        rtc_configuration=rtc,
         media_stream_constraints={"video": False, "audio": True},
     )
 
@@ -358,7 +360,7 @@ def app_sst_main():
         key="speech-to-text_main",
         mode=WebRtcMode.SENDONLY,
         audio_receiver_size=1024,
-        rtc_configuration={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]},
+        rtc_configuration=rtc,
         media_stream_constraints={"video": False, "audio": True},
     )
 
