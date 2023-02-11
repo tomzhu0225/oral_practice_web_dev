@@ -220,6 +220,8 @@ def main():
         This page is providing a new way of practice your oral with openai!
         If you like the app, 
         
+        # [Donate me!](https://drawingsword.com/post/donate-me/)
+        
         please star source code:[github](https://github.com/tomzhu0225/oral_practice_web_dev)
         
         follow me on bilibili [drawingsword](https://space.bilibili.com/64849811/)
