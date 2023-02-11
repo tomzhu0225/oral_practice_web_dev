@@ -240,8 +240,27 @@ def main():
         """,
         unsafe_allow_html=True,
         )
-        stun_mode = st.selectbox("Choose the stun server", ["google1","中国","google2","google3","google4"],key='stun')
-        if stun_mode=='中国':
+        
+        serverlist=[ "google1","xten","google2","google3","google4",  
+        'stun.voipbuster.com',  
+        'stun.sipgate.net',  
+        'stun.ekiga.net',
+        'stun.ideasip.com',
+        'stun.schlund.de',
+        'stun.voiparound.com',
+        'stun.voipbuster.com',
+        'stun.voipstunt.com',
+        'stun.counterpath.com',
+        'stun.1und1.de',
+        'stun.gmx.net',
+        'stun.callwithus.com',
+        'stun.counterpath.net',
+        'stun.internetcalls.com',
+        'numb.viagenie.ca']
+
+        stun_mode = st.selectbox("Choose the stun server", serverlist,key='stun')
+        
+        if stun_mode=='xten':
             rtc={"iceServers": [{"urls": ["stun:stun.xten.com:3478"]}]}
         elif stun_mode=="google1":
             rtc={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]}
@@ -251,6 +270,10 @@ def main():
             rtc={"iceServers": [{"urls": ["stun:stun2.l.google.com:19302"]}]}
         elif stun_mode=="google4":
             rtc={"iceServers": [{"urls": ["stun:stun3.l.google.com:19302"]}]}
+        for i in range(6, len(serverlist)+1):
+            if stun_mode==serverlist[i]:
+                rtc={"iceServers": [{"urls": ["stun:"+serverlist[i]+":3487"]}]}
+            
             
 
         
