@@ -425,7 +425,7 @@ def app_sst_main():
     webrtc_ctx = webrtc_streamer(
         key="speech-to-text_main",
         mode=WebRtcMode.SENDONLY,
-        audio_receiver_size=4096,
+        audio_receiver_size=6096,
         rtc_configuration=rtc,
         media_stream_constraints={"video": False, "audio": True},
     )
@@ -441,7 +441,7 @@ def app_sst_main():
     sound1 = pydub.AudioSegment.empty()
     sound_eval = pydub.AudioSegment.empty()
     #150 约为3s
-    while i<1500 :
+    while i<2500 :
         i=i+1
         if webrtc_ctx.audio_receiver:
             
