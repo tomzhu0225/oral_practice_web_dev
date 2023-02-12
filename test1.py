@@ -425,7 +425,7 @@ def app_sst_main():
     webrtc_ctx = webrtc_streamer(
         key="speech-to-text_main",
         mode=WebRtcMode.SENDONLY,
-        audio_receiver_size=4096,
+        audio_receiver_size=2048,
         rtc_configuration=rtc,
         media_stream_constraints={"video": False, "audio": True},
     )
@@ -469,10 +469,10 @@ def app_sst_main():
                 sound_chunk = sound_chunk.set_channels(1).set_frame_rate(16000)
                 sound1=sound1+sound_chunk
                 sound_eval=sound_eval+sound_chunk
-            if i % 50 ==0 and i>150:
+            if i % 35 ==0 and i>150:
                 deci_stop =np.array(sound_eval.get_array_of_samples()) # auto stop
                 max_v=np.amax(deci_stop)
-                if max_v<500:
+                if max_v<700:
                     break
                 else:
                     sound_eval = pydub.AudioSegment.empty()
@@ -482,7 +482,7 @@ def app_sst_main():
             status_indicator.write("AudioReciver is not set. Abort.")
             break
     sound1.export("output.wav", format="wav")
-    buffer =np.array(sound1.get_array_of_samples())
+    #buffer =np.array(sound1.get_array_of_samples())
     
     st.write(sound1)
     status_indicator.write("Starting recognition and don't press stop")
