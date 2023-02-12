@@ -192,7 +192,7 @@ def main():
                     """
     left, right = st.columns(2)
     with left: 
-        lang_mode = st.selectbox("Choose your language", ["en-US","zh-CN", "fr-FR", "ja-JP", "it-IT", "pt-PT", "ru-RU"],key='lang')
+        lang_mode = st.selectbox("Choose your language", ["en-US","zh-CN", "fr-FR", 'es-ES','ko-KR',"ja-JP", "it-IT", "pt-PT", "ru-RU"],key='lang')
     with right:
         int_mode = st.selectbox('Choose the model',["high Intelligence", "medium Intelligence", "low Intelligence"],key='intel')
     if int_mode=='high Intelligence':
