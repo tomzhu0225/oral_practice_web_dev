@@ -441,7 +441,7 @@ def app_sst_main():
     sound1 = pydub.AudioSegment.empty()
     sound_eval = pydub.AudioSegment.empty()
     #150 约为3s
-    while i<2500 :
+    while i<800 :
         i=i+1
         if webrtc_ctx.audio_receiver:
             
