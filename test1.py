@@ -169,12 +169,12 @@ def main():
     
     if 'count' not in st.session_state:
         st.session_state['count'] = 0
-    Me_temp='ME'+str(st.session_state['count'])
+    Me_temp='ME'+str(0)
     if  Me_temp not in st.session_state:
         st.session_state[Me_temp]=''
     if 'conv' not in st.session_state:
         st.session_state['conv'] = ''
-    You_temp='YOU'+str(st.session_state['count'])
+    You_temp='YOU'+str(0)
     if You_temp not in st.session_state:
         st.session_state[You_temp]=''
     if 'sugg' not in st.session_state:
