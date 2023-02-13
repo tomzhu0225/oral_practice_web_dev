@@ -14,57 +14,24 @@ import queue
 import urllib.request
 import numpy as np
 import time
-# def speak():
-#     speech_config = speechsdk.SpeechConfig(subscription="5c05507933314a0caa980687fad5e2de", region="francecentral")
-#     speech_config.speech_recognition_language = lang_mode
-#     speech_recognizer = speechsdk.SpeechRecognizer(speech_config=speech_config)    
-#     #Asks user for mic input and prints transcription result on screen
-    
-#     result = speech_recognizer.recognize_once()
-    
-#     return result.text
+
+from tencentyun_api import asr, tts
+
 HERE = Path(__file__).parent
 
 logger = logging.getLogger(__name__)
-def recognize_from_mic(lang,azureapi):
-	#Find your key and resource region under the 'Keys and Endpoint' tab in your Speech resource in Azure Portal
-	#Remember to delete the brackets <> when pasting your key and region!
-    speech_config = speechsdk.SpeechConfig(subscription=azureapi, region="francecentral")
-    speech_config.speech_recognition_language = lang
-    audio_config = speechsdk.audio.AudioConfig(filename="output.wav")
-    speech_recognizer = speechsdk.SpeechRecognizer(speech_config=speech_config,audio_config=audio_config)    
-    #Asks user for mic input and prints transcription result on screen
-    
-    result = speech_recognizer.recognize_once()
-    
-    return result.text
-def autoplay_audio():
-    with open('tts.mp3', "rb") as f:
-        data = f.read()
-        b64 = base64.b64encode(data).decode()
-        md = f"""
+
+def autoplay_audio(b64):
+
+    md = f"""
             <audio autoplay="true">
-            <source src="data:audio/mp3;base64,{b64}" type="audio/mp3">
+            <source src="data:audio/mp3;base64,{b64}" type="audio/wav">
             </audio>
             """
-        st.markdown(
+    st.markdown(
             md,
             unsafe_allow_html=True,
         )
-def synthesize_to_speaker(text,lang,azureapi):
-	#Find your key and resource region under the 'Keys and Endpoint' tab in your Speech resource in Azure Portal
-	#Remember to delete the brackets <> when pasting your key and region!
-    speech_config = speechsdk.SpeechConfig(subscription=azureapi, region="francecentral")
-    speech_config.speech_synthesis_language = lang
-    #In this sample we are using the default speaker 
-    #Learn how to customize your speaker using SSML in Azure Cognitive Services Speech documentation
-    speech_config.set_speech_synthesis_output_format(speechsdk.SpeechSynthesisOutputFormat.Audio16Khz32KBitRateMonoMp3)  
-  
-    file_name = "tts.mp3"  
-    file_config = speechsdk.audio.AudioOutputConfig(filename=file_name)  
-    synthesizer = speechsdk.SpeechSynthesizer(speech_config=speech_config, audio_config=file_config)  
-    
-    result=synthesizer.speak_text_async(text).get()
 
 def respond(conversation,mod,key):
     openai.api_key = key
@@ -307,7 +274,7 @@ def main():
         border-radius: 10px;
       }
       .type2 {
-        background-color: darkblue;
+        background-color: grey;
         padding: 10px;
         border-radius: 10px;
       }
@@ -394,8 +361,10 @@ def app_sst_side():
     # new_me=recognize_from_mic(lang_mode,azurekey)
     # st.write(2)
 
-
-    new_me=recognize_from_mic(lang_mode,st.secrets["azurekey"])
+    with open('output.wav', "rb") as f:
+        data = f.read()
+        b64 = base64.b64encode(data).decode()
+    new_me = asr(st.secrets["SecretId"], st.secrets["SecretKey"], b64)
     st.session_state['count']=st.session_state['count']+1
     
     if st.session_state['count']==1:     
@@ -406,8 +375,8 @@ def app_sst_side():
     Me_temp='ME'+str(st.session_state['count']-1)
     new_you=respond(st.session_state['conv'],respond_mod,st.secrets["openaikey"])
     
-    synthesize_to_speaker(new_you,lang_mode,st.secrets["azurekey"])
-    autoplay_audio()
+    b64_record = tts(st.secrets["SecretId"], st.secrets["SecretKey"], new_you)
+    autoplay_audio(b64_record)
     
     You_temp='YOU'+str(st.session_state['count']-1)
     
@@ -493,8 +462,11 @@ def app_sst_main():
     # new_me=recognize_from_mic(lang_mode,azurekey)
     # st.write(2)
 
-
-    new_me=recognize_from_mic(lang_mode,st.secrets["azurekey"])
+    with open('output.wav', "rb") as f:
+        data = f.read()
+        b64 = base64.b64encode(data).decode()
+    new_me = asr(st.secrets["SecretId"], st.secrets["SecretKey"], b64)
+    
     st.session_state['count']=st.session_state['count']+1
     
     if st.session_state['count']==1:     
@@ -505,8 +477,8 @@ def app_sst_main():
     Me_temp='ME'+str(st.session_state['count']-1)
     new_you=respond(st.session_state['conv'],respond_mod,st.secrets["openaikey"])
     
-    synthesize_to_speaker(new_you,lang_mode,st.secrets["azurekey"])
-    autoplay_audio()
+    b64_record = tts(st.secrets["SecretId"], st.secrets["SecretKey"], new_you)
+    autoplay_audio(b64_record)
     
     You_temp='YOU'+str(st.session_state['count']-1)
     
