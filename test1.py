@@ -280,7 +280,7 @@ def main():
             
 
         
-        app_sst_side()
+        #app_sst_side()
         if st.button('clear'):
             for key in ['count','conv','sugg']:
                 del st.session_state[key]
@@ -425,7 +425,7 @@ def app_sst_main():
     webrtc_ctx = webrtc_streamer(
         key="speech-to-text_main",
         mode=WebRtcMode.SENDONLY,
-        audio_receiver_size=6096,
+        audio_receiver_size=2048,
         rtc_configuration=rtc,
         media_stream_constraints={"video": False, "audio": True},
     )
