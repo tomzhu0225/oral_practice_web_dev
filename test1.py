@@ -469,6 +469,8 @@ def app_sst_main():
                 sound_chunk = sound_chunk.set_channels(1).set_frame_rate(16000)
                 sound1=sound1+sound_chunk
                 sound_eval=sound_eval+sound_chunk
+            else:
+                break
             if i % 35 ==0 and i>150:
                 deci_stop =np.array(sound_eval.get_array_of_samples()) # auto stop
                 max_v=np.amax(deci_stop)
