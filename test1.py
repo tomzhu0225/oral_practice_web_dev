@@ -100,20 +100,20 @@ def lang_convertor(lang):
         return ls[0]
     if lang=='zh':
         return ls[1]
-    if lang=='es':
+    if lang=='fr':
         return ls[2]
-    if lang=='ko':
+    if lang=='es':
         return ls[3]
-    if lang=='ja':
+    if lang=='ko':
         return ls[4]
-    if lang=='it':
+    if lang=='ja':
         return ls[5]
     if lang=='it':
-        return ls[5]
-    if lang=='pt':
         return ls[6]
-    if lang=='ru':
+    if lang=='pt':
         return ls[7]
+    if lang=='ru':
+        return ls[8]
 def main():
     global lang_mode
     global text_output
