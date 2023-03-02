@@ -212,7 +212,7 @@ def main():
             for key in ['count','conv','sugg']:
                 del st.session_state[key]
             init()
-        st.write('suggestion:'+st.session_state['sugg'])
+        #st.write('suggestion:'+st.session_state['sugg'])
         
     for i in range(st.session_state['count']):
             st.markdown("""
