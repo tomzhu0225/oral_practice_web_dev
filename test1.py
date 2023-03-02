@@ -26,10 +26,9 @@ logger = logging.getLogger(__name__)
 # inject openai api key
 openai.api_key = os.getenv(st.secrets["openaikey"])
 
-def recognize_from_mic(lang,azureapi):
+def recognize_from_mic(lang):
     audio_file = open("output.mp3", "rb")
-    transcript = openai.Audio.transcribe("whisper-1", 
-                                         audio_file,language=lang)    
+    transcript = openai.Audio.transcribe("whisper-1", audio_file,language=lang)    
         
     return transcript['text']
 def autoplay_audio():
