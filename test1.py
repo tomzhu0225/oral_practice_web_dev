@@ -240,7 +240,7 @@ def app_sst_main():
     webrtc_ctx = webrtc_streamer(
         key="speech-to-text_main",
         mode=WebRtcMode.SENDONLY,
-        audio_receiver_size=2048,
+        audio_receiver_size=4096,
         rtc_configuration=rtc,
         media_stream_constraints={"video": False, "audio": True},
     )
