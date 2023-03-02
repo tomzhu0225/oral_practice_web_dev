@@ -93,6 +93,12 @@ def init():
     if 'sugg' not in st.session_state:
         st.session_state['sugg'] = ''
 def main():
+    global lang_mode
+    global text_output
+    global Preset
+    global respond_mod
+    global sugg_mod
+    global rtc
     serverlist=[ "google1","xten","google2","google3","google4",  
                 'google5',
     'stun.voipbuster.com',  
