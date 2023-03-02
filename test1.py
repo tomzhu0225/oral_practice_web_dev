@@ -24,7 +24,7 @@ HERE = Path(__file__).parent
 
 logger = logging.getLogger(__name__)
 # inject openai api key
-openai.api_key = os.getenv(st.secrets["openaikey"])
+openai.api_key = st.secrets["openaikey"]
 
 def recognize_from_mic(lang):
     audio_file = open("output.mp3", "rb")
@@ -240,7 +240,7 @@ def app_sst_main():
     webrtc_ctx = webrtc_streamer(
         key="speech-to-text_main",
         mode=WebRtcMode.SENDONLY,
-        audio_receiver_size=512,
+        audio_receiver_size=2048,
         rtc_configuration=rtc,
         media_stream_constraints={"video": False, "audio": True},
     )
