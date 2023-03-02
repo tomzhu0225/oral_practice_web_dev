@@ -73,7 +73,7 @@ def suggestion(conversation):
       model="gpt-3.5-turbo",
       messages=conversation
     )
-    response.choices[0]['message']['content']
+    return response.choices[0]['message']['content']
 def concatenate_me(original,new):
     original=original+[{"role": "user", "content": new}]
     return original
@@ -223,7 +223,7 @@ def main():
             for key in ['count','conv','sugg']:
                 del st.session_state[key]
             init()
-        #st.write('suggestion:'+st.session_state['sugg'])
+        st.write('suggestion:'+st.session_state['sugg'])
         
     for i in range(st.session_state['count']):
             st.markdown("""
