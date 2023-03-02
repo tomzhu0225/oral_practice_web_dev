@@ -48,6 +48,7 @@ def autoplay_audio():
 def synthesize_to_speaker(text,lang,azureapi):
 	#Find your key and resource region under the 'Keys and Endpoint' tab in your Speech resource in Azure Portal
 	#Remember to delete the brackets <> when pasting your key and region!
+    lang=lang_convertor(lang)
     speech_config = speechsdk.SpeechConfig(subscription=azureapi, region="francecentral")
     speech_config.speech_synthesis_language = lang
     #In this sample we are using the default speaker 
@@ -93,6 +94,26 @@ def init():
         st.session_state[You_temp]=''
     if 'sugg' not in st.session_state:
         st.session_state['sugg'] = ''
+def lang_convertor(lang):
+    ls=["en-US","zh-CN", "fr-FR", 'es-ES','ko-KR',"ja-JP", "it-IT", "pt-PT", "ru-RU"]
+    if lang=='en':
+        return ls[0]
+    if lang=='zh':
+        return ls[1]
+    if lang=='es':
+        return ls[2]
+    if lang=='ko':
+        return ls[3]
+    if lang=='ja':
+        return ls[4]
+    if lang=='it':
+        return ls[5]
+    if lang=='it':
+        return ls[5]
+    if lang=='pt':
+        return ls[6]
+    if lang=='ru':
+        return ls[7]
 def main():
     global lang_mode
     global text_output
@@ -133,17 +154,7 @@ def main():
     left, right = st.columns(2)
     with left: 
         lang_mode = st.selectbox("Choose your language", ["en","zh", "fr", 'es','ko',"ja", "it", "pt", "ru"],key='lang')
-    # with right:
-    #     int_mode = st.selectbox('Choose the model',["high Intelligence", "medium Intelligence", "low Intelligence"],key='intel')
-    # if int_mode=='high Intelligence':
-    #     respond_mod="gpt-3.5-turbo"
-    #     sugg_mod="gpt-3.5-turbo"
-    # elif int_mode=='medium Intelligence':
-    #     respond_mod="gpt-3.5-turbo"
-    #     sugg_mod="text-curie-001"
-    # else:
-    #     respond_mod="text-curie-001"
-    #     sugg_mod="text-curie-001"
+
      
     with right:
         stun_mode = st.selectbox("Choose the stun server", serverlist,key='stun')
@@ -303,14 +314,6 @@ def app_sst_main():
     
     st.write(sound1)
     status_indicator.write("Starting recognition and don't press stop")
-    
-    # st.write(sound_window_buffer)
-    # st.audio(sound_window_buffer)
-    # st.write(1)
-    # new_me=recognize_from_mic(lang_mode,azurekey)
-    # st.write(2)
-
-
     new_me=recognize_from_mic(lang_mode)
     st.session_state['count']=st.session_state['count']+1
     
