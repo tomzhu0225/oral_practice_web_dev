@@ -93,12 +93,6 @@ def init():
     if 'sugg' not in st.session_state:
         st.session_state['sugg'] = ''
 def main():
-    global lang_mode
-    global text_output
-    global Preset
-    global respond_mod
-    global sugg_mod
-    global rtc
     serverlist=[ "google1","xten","google2","google3","google4",  
                 'google5',
     'stun.voipbuster.com',  
@@ -236,8 +230,6 @@ def main():
     app_sst_main()
 
 def app_sst_main():
-    global buffer
-    global sugg
     webrtc_ctx = webrtc_streamer(
         key="speech-to-text_main",
         mode=WebRtcMode.SENDONLY,
@@ -312,7 +304,7 @@ def app_sst_main():
     # st.write(2)
 
 
-    new_me=recognize_from_mic(lang_mode,st.secrets["azurekey"])
+    new_me=recognize_from_mic(lang_mode)
     st.session_state['count']=st.session_state['count']+1
     
     if st.session_state['count']==1:     
