@@ -28,7 +28,8 @@ openai.api_key = os.getenv(st.secrets["openaikey"])
 
 def recognize_from_mic(lang):
     audio_file = open("output.mp3", "rb")
-    transcript = openai.Audio.transcribe("whisper-1", audio_file,language=lang)    
+    transcript = openai.Audio.transcribe(model="whisper-1",
+                                         file=audio_file,language=lang)    
         
     return transcript['text']
 def autoplay_audio():
