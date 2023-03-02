@@ -336,7 +336,7 @@ def app_sst_main():
     st.session_state[Me_temp]=new_me
     st.session_state['conv'] = concatenate_you(st.session_state['conv'],new_you)
                                                 
-    conversation_sugg=st.session_state['conv']
+    conversation_sugg=st.session_state['conv']+[{{"role": "system", "content": 'now you(as AI) will pretent to be the user to give the respond to the assistant'}}]
     sugg=suggestion(conversation_sugg)
     st.session_state['sugg']=sugg
     status_indicator.write("Press stop")
