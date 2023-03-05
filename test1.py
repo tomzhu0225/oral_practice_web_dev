@@ -121,7 +121,7 @@ def main():
     global respond_mod
     global sugg_mod
     global rtc
-    serverlist=[ "google1","xten","google2","google3","google4",  
+    serverlist=[ "google1","test(中国)","google2","google3","google4",  
                 'google5',
     'stun.voipbuster.com',  
     'stun.sipgate.net',  
@@ -159,8 +159,8 @@ def main():
     with right:
         stun_mode = st.selectbox("Choose the stun server", serverlist,key='stun')
         
-        if stun_mode=='xten':
-            rtc={"iceServers": [{"urls": ["stun:stun.xten.com:3478"]}]}
+        if stun_mode=='test(中国)':
+            rtc={"iceServers": [{"urls": ["turn:60.205.206.155:3487"]}]}
         elif stun_mode=="google1":
             rtc={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]}
         elif stun_mode=="google2":
