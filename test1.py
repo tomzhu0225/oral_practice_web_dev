@@ -95,13 +95,15 @@ def init():
     if 'sugg' not in st.session_state:
         st.session_state['sugg'] = ''
 def lang_convertor(lang):
-    ls=["en-US","zh-CN", "fr-FR", 'es-ES','ko-KR',"ja-JP", "it-IT", "pt-PT", "ru-RU"]
+    ls=["en-US","zh-CN", "fr-FR",'es-ES','ko-KR',"ja-JP", "it-IT", "pt-PT", "ru-RU"]
     if lang=='en':
         return ls[0]
     if lang=='zh':
         return ls[1]
     if lang=='fr':
         return ls[2]
+    if lang=='de':
+        return 'de-DE'
     if lang=='es':
         return ls[3]
     if lang=='ko':
@@ -153,7 +155,7 @@ def main():
                     """
     left, right = st.columns(2)
     with left: 
-        lang_mode = st.selectbox("Choose your language", ["en","zh", "fr", 'es','ko',"ja", "it", "pt", "ru"],key='lang')
+        lang_mode = st.selectbox("Choose your language", ["en","zh", "fr",'de', 'es','ko',"ja", "it", "pt", "ru"],key='lang')
 
      
     with right:
