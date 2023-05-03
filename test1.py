@@ -253,7 +253,7 @@ def app_sst_main():
     webrtc_ctx = webrtc_streamer(
         key="speech-to-text_main",
         mode=WebRtcMode.SENDONLY,
-        audio_receiver_size=4096,
+        audio_receiver_size=1024,
         rtc_configuration=rtc,
         media_stream_constraints={"video": False, "audio": True},
     )
@@ -269,14 +269,14 @@ def app_sst_main():
     sound1 = pydub.AudioSegment.empty()
     sound_eval = pydub.AudioSegment.empty()
     #150 约为3s
-    while i<1500 :
+    while i<2500 :
         i=i+1
         if webrtc_ctx.audio_receiver:
             
 
             sound_chunk = pydub.AudioSegment.empty()
             try:
-                audio_frames = webrtc_ctx.audio_receiver.get_frames(timeout=2)
+                audio_frames = webrtc_ctx.audio_receiver.get_frames(timeout=1)
             except queue.Empty:
                 time.sleep(0.1)
                 status_indicator.write("No frame arrived.")
